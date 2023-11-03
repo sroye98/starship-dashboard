@@ -1,20 +1,23 @@
-import type { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Starship Dashboard',
-  description: 'Sample Dashboard for Tesla Model S Browser',
-}
+import { Providers } from './providers'
+import { Provider } from 'react-redux'
+import { store } from '@/stores/store'
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode
+	children: React.ReactNode
 }) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
-    </html>
-  )
+	return (
+		<html lang="en">
+			<body>
+				<Provider store={store}>
+					<Providers>
+						{children}
+					</Providers>
+				</Provider>
+			</body>
+		</html>
+	)
 }

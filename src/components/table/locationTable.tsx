@@ -1,22 +1,51 @@
-import LocationHead from "./locationHead";
-import LocationRow from "./locationRow";
+'use client'
 
-type Props = {
-    headerColumns: string[],
-    rowValues: string[][]
-}
+import { 
+    Table, 
+    TableContainer, 
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tr
+} from "@chakra-ui/react";
+import { useAppSelector } from "@/stores/hooks";
+import { selectSearchCities } from "@/features/location/locationSlice";
 
-export default function LocationTable({ headerColumns, rowValues } : Props) {
-    const rows = rowValues.map(element => {
+export default function LocationTable() {
+    const headerColumns: string[] = ["Id", "Name", "State"];
+    const cities = useAppSelector(selectSearchCities);
+
+    const headers = headerColumns.map((head) => {
         return (
-            <LocationRow cellValues={element} key={rowValues.indexOf(element)} />
+            <Th key={headerColumns.indexOf(head)}>
+                {head}
+            </Th>
+        )
+    });
+
+    const rows = cities.map((city) => {
+        return (
+            <Tr key={city.id}>
+                <Td>{city.id}</Td>
+                <Td>{city.name}</Td>
+                <Td>{city.state}</Td>
+            </Tr>
         )
     });
 
     return (
-        <table>
-            <LocationHead headerValues={headerColumns}  />
-            {rows}
-        </table>
+        <TableContainer>
+            <Table variant='striped'>
+                <Thead>
+                    <Tr>
+                        {headers}
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    {rows}
+                </Tbody>
+            </Table>
+        </TableContainer>
     )
 }
