@@ -1,6 +1,5 @@
 'use client'
 
-import useLocationSearch from '@/libs/useLocationSearch';
 import {
     Button,
     FormControl,
@@ -9,78 +8,32 @@ import {
     FormHelperText,
     Input,
 } from '@chakra-ui/react';
-import { 
-    Field, 
-    Form, 
-    Formik, 
-    FormikProps, 
-} from "formik";
-import { useAppDispatch } from '@/stores/hooks';
-import { searchCities } from "@/features/location/locationSlice";
+import { ChangeEventHandler, MouseEventHandler } from 'react';
 
-interface FieldProps {
-    field: {
-        name: string;
-        value: any;
-        onChange: (event: React.ChangeEvent<any>) => void;
-        onBlur: (event: React.FocusEvent<any>) => void;
-    };
-    form: {
-        touched: { [field: string]: boolean };
-        errors: { [field: string]: boolean };
-    };
-} 
+interface StateSearchProps {
+    input: string | number | readonly string[] | undefined,
+    onInputChange: ChangeEventHandler<HTMLInputElement> | undefined,
+    isLoadingState: boolean,
+    onHandleOnSubmit: MouseEventHandler<HTMLButtonElement>,
+}
 
-export default function StateSearch() {
-    function validateState(value: string) {
-        let error
-
-        if (!value) {
-            error = 'State is required'
-        } else if (value.length > 2 || value.length < 2) {
-            error = 'Please use State two digit abbreviation'
-        }
-
-        return error
-    }
-
-    const {
-        handleCitySearchAsync,
-        isLoading
-    } = useLocationSearch();
-
-    const dispatch = useAppDispatch();
+export default function StateSearch({ input, onInputChange, isLoadingState, onHandleOnSubmit }: StateSearchProps) {
+    const isError = input === '';
 
     return (
-        <Formik
-            initialValues={{ state: 'TX' }} 
-            onSubmit={async (values, actions) => {
-                const cities = await handleCitySearchAsync(values.state);
-                actions.setSubmitting(isLoading);
-                if (cities && cities.data) {
-                    dispatch(searchCities(cities.data!));
-                    values.state = '';
-                }
-            }}>
-            {(props: FormikProps<{state:string}>) => (
-                <Form>
-                    <Field name='state' validate={validateState}>
-                        {({ field, form }: FieldProps) => (
-                            <FormControl isInvalid={form.errors.state && form.touched.state}>
-                                <FormLabel>Your State</FormLabel>
-                                <Input {...field} placeholder='Enter your state' />
-                                <FormHelperText>Weather Results will be displayed based on City, State Selected below</FormHelperText>
-                                <FormErrorMessage>
-                                    {form.errors.state}
-                                </FormErrorMessage>
-                            </FormControl>
-                        )}
-                    </Field>
-                    <Button mt={4} colorScheme='teal' isLoading={props.isSubmitting} type='submit'>
-                        Submit
-                    </Button>
-                </Form>
-            )}
-        </Formik>
+        <form>
+            <FormControl isInvalid={isError}>
+                <FormLabel>Your State</FormLabel>
+                <Input type="text" name="state" placeholder="Enter your state" value={input} onChange={onInputChange} />
+                {!isError ? (
+                    <FormHelperText>Weather Results will be displayed based on City, State Selected below</FormHelperText>
+                ) : (
+                    <FormErrorMessage>Please use State two digit abbreviation</FormErrorMessage>
+                )}
+            </FormControl>
+            <Button mt={4} colorScheme='teal' isLoading={isLoadingState} type='submit' onClick={onHandleOnSubmit}>
+                Submit
+            </Button>
+        </form>
     )
 }
