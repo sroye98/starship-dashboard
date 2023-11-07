@@ -6,6 +6,7 @@ import {
     CityData, 
     CityResponse 
 } from "@/types";
+import { Secrets } from "@/constants";
 import { useState } from "react"; 
 
 const useLocationSearch = () => {
@@ -24,7 +25,7 @@ const useLocationSearch = () => {
             };
 
             var headers = new Headers();
-            headers.append("X-CSCAPI-KEY", "bXJHWmxFVnJwRUxjcVVFQ084SFJYMlNtMVB1R21zQTVSYVJtb0Y2OQ==");
+            headers.append("X-CSCAPI-KEY", Secrets.locationApiKey!);
             
             var url: string = `https://api.countrystatecity.in/v1/countries/US/states/${normalizedLocation}/cities`;
             var requestOptions: RequestInit = {

@@ -1,5 +1,6 @@
 'use client'
 
+import { Secrets } from "@/constants";
 import { ApiStatus } from "@/enums";
 import { ApiResponse, WeatherResponse } from "@/types";
 import { useState } from "react";
@@ -19,7 +20,7 @@ const useWeatherSearch = () => {
 
             const normalizedCity = city.toUpperCase();
             const normalizedState = state.toUpperCase();
-            const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${normalizedCity},${normalizedState},US&appid=31b2c1173953535408e06d6663d735f2`;
+            const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${normalizedCity},${normalizedState},US&appid=${Secrets.weatherApiKey!}`;
             const requestOptions: RequestInit = {
                 method: 'GET',
                 redirect: 'follow'
