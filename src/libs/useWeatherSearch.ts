@@ -1,57 +1,40 @@
 'use client'
 
 import { ApiStatus } from "@/enums";
-import { 
-    ApiResponse, 
-    CityData, 
-    CityResponse 
-} from "@/types";
-import { useState } from "react"; 
+import { ApiResponse, WeatherResponse } from "@/types";
+import { useState } from "react";
 
-const useLocationSearch = () => {
+const useWeatherSearch = () => {
     const [isLoading, setLoading] = useState<boolean>(false);
 
-    const handleCitySearchAsync = async (loc: string) => {
+    const handleWeatherSearchAsync = async (city: string, state: string) => {
         try {
             setLoading(true);
 
-            const normalizedLocation = loc.toUpperCase();
-
-            let results: ApiResponse<CityData[]> = {
+            let results: ApiResponse<WeatherResponse> = {
                 status: ApiStatus.Loading,
                 error: '',
-                data: []
+                data: null
             };
 
-            var headers = new Headers();
-            headers.append("X-CSCAPI-KEY", "bXJHWmxFVnJwRUxjcVVFQ084SFJYMlNtMVB1R21zQTVSYVJtb0Y2OQ==");
-            
-            var url: string = `https://api.countrystatecity.in/v1/countries/US/states/${normalizedLocation}/cities`;
-            var requestOptions: RequestInit = {
+            const normalizedCity = city.toUpperCase();
+            const normalizedState = state.toUpperCase();
+            const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${normalizedCity},${normalizedState},US&appid=31b2c1173953535408e06d6663d735f2`;
+            const requestOptions: RequestInit = {
                 method: 'GET',
-                headers: headers,
                 redirect: 'follow'
             };
 
             await fetch(url, requestOptions)
                 .then(response => {
                     if (!response.ok) throw Error(response.statusText);
-                    return response.json() as Promise<CityResponse[]>;
+                    return response.json() as Promise<WeatherResponse>;
                 })
                 .then(data => {
-                    const dataResults: CityData[] = []
-                    data.map((item) => {
-                        dataResults.push({
-                            id: item.id.toString(),
-                            name: item.name,
-                            state: normalizedLocation
-                        });
-                    });
-
                     results = {
                         status: ApiStatus.Success,
                         error: '',
-                        data: dataResults
+                        data: data
                     };
                 })
                 .catch(err => {
@@ -78,8 +61,8 @@ const useLocationSearch = () => {
 
     return {
         isLoading,
-        handleCitySearchAsync,
+        handleWeatherSearchAsync,
     };
 }
 
-export default useLocationSearch;
+export default useWeatherSearch;

@@ -1,21 +1,23 @@
 'use client'
 
-import Clock from '@/components/clock/clock';
-import StateSearch from '@/components/search/stateSearch'
-import { DataTable } from '@/components/table/dataTable'
-import { IApiData } from '@/interfaces/apiData';
-import { ICitiesData } from '@/interfaces/citiesData';
-import useLocationSearch from '@/libs/useLocationSearch';
-import { Box, Container, HStack, Heading, VStack } from '@chakra-ui/react';
-import { createColumnHelper } from '@tanstack/react-table';
 import { FormEvent, MouseEvent, useState } from 'react';
+import { Box, Container, Grid, GridItem, HStack, Heading, VStack } from '@chakra-ui/react';
+import { createColumnHelper } from '@tanstack/react-table';
+import StateSearch from '@/components/search/stateSearch';
+import DataTable from '@/components/table/dataTable';
+import { 
+    ApiResponse, 
+    CityData, 
+} from "@/types";
+import useLocationSearch from '@/libs/useLocationSearch';
+
 // import Image from 'next/image'
 
 
 export default function Home() {
 	const [input, setInput] = useState('TX');
 	const [isLoading, setIsLoading] = useState(false);
-	const [data, setData] = useState<ICitiesData[]>([]);
+	const [data, setData] = useState<CityData[]>([]);
 
 	const {
 		handleCitySearchAsync,
@@ -29,13 +31,13 @@ export default function Home() {
 		e.preventDefault();
 		setIsLoading(true);
 
-		const results: IApiData = await handleCitySearchAsync(input);
+		const results: ApiResponse<CityData[]> = await handleCitySearchAsync(input);
 		setData(results.data!);
 
 		setIsLoading(false);
 	}
 
-	const columnHelper = createColumnHelper<ICitiesData>();
+	const columnHelper = createColumnHelper<CityData>();
 
 	const columns = [
 		columnHelper.accessor("id", {
@@ -55,22 +57,32 @@ export default function Home() {
 	return (
 		<Container maxW='full'>
 			<VStack spacing={10} align='stretch'>
-				<Heading>Starship Dashboard</Heading>
-				<HStack spacing={10}>
-					<Box p={4} borderWidth='1px' borderRadius='lg'>
+				
+				<Grid templateColumns='repeat(12, 1fr)' gap={4}>
+					<GridItem colSpan={12} alignItems='center'>
+						<Heading>Starship Dashboard</Heading>
+					</GridItem>
+					<GridItem colSpan={4}>
 						<StateSearch 
 							input={input} 
 							onInputChange={handleInputChange} 
 							isLoadingState={isLoading}
 							onHandleOnSubmit={handleOnLocationSearchClick} />
+					</GridItem>
+					<GridItem colSpan={2}>
+
+					</GridItem>
+				</Grid>
+				<HStack spacing={10}>
+					<Box p={4} borderWidth='1px' borderRadius='lg'>
+
 					</Box>
 					<Box p={4} borderWidth='1px' borderRadius='lg'>
-						<Clock />
 					</Box>
 				</HStack>
 
 				<Box p={4} borderWidth='1px' borderRadius='lg'>
-					<DataTable columns={columns} data={data} />
+					<DataTable columns={columns} data={data} tableVariant='striped' paginationVariant='advanced' />
 				</Box>
 			</VStack>
 		</Container>
