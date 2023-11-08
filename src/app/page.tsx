@@ -1,40 +1,51 @@
-'use client'
+"use client"
 
-import { FormEvent, MouseEvent, useState } from 'react';
-import { Box, Container, Grid, GridItem, HStack, Heading, VStack } from '@chakra-ui/react';
-import { createColumnHelper } from '@tanstack/react-table';
-import StateSearch from '@/components/search/stateSearch';
-import DataTable from '@/components/table/dataTable';
+import { useState } from "react";
+import { 
+	Box, 
+	Container, 
+	Grid, 
+	GridItem, 
+	HStack, 
+	Heading, 
+	VStack 
+} from "@chakra-ui/react";
+import { createColumnHelper } from "@tanstack/react-table";
+import StateSearch from "@/components/search/stateSearch";
+import DataTable from "@/components/table/dataTable";
 import { 
     ApiResponse, 
-    CityData, 
+    CityData,
+	WeatherResponse, 
 } from "@/types";
-import useLocationSearch from '@/libs/useLocationSearch';
+import useLocationSearch from "@/libs/useLocationSearch";
+import useWeatherSearch from "@/libs/useWeatherSearch";
+import { FieldValues } from "react-hook-form";
+import WeatherSearch from "@/components/search/weatherSearch";
 
-// import Image from 'next/image'
+// import Image from "next/image"
 
 
 export default function Home() {
-	const [input, setInput] = useState('TX');
-	const [isLoading, setIsLoading] = useState(false);
 	const [data, setData] = useState<CityData[]>([]);
+	const [weather, setWeather] = useState<WeatherResponse>();
 
 	const {
 		handleCitySearchAsync,
 	} = useLocationSearch();
 
-	const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
-		setInput(e.currentTarget.value);
+	const { 
+		handleWeatherSearchAsync,
+	} = useWeatherSearch();
+
+	const handleOnLocationSearchClick = async (values: FieldValues) => {
+		const results: ApiResponse<CityData[]> = await handleCitySearchAsync(values.state);
+		setData(results.data!);
 	}
 
-	const handleOnLocationSearchClick = async (e: MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-		setIsLoading(true);
-
-		const results: ApiResponse<CityData[]> = await handleCitySearchAsync(input);
-		setData(results.data!);
-
-		setIsLoading(false);
+	const handleOnWeatherSearchClick = async (values: FieldValues) => {
+		const results: ApiResponse<WeatherResponse> = await handleWeatherSearchAsync(values.city, values.state);
+		setWeather(results.data!);
 	}
 
 	const columnHelper = createColumnHelper<CityData>();
@@ -55,35 +66,42 @@ export default function Home() {
 	];
 	
 	return (
-		<Container maxW='full'>
-			<VStack spacing={10} align='stretch'>
-				
-				<Grid templateColumns='repeat(12, 1fr)' gap={4}>
-					<GridItem colSpan={12} alignItems='center'>
-						<Heading>Starship Dashboard</Heading>
+		<Container maxW="full">
+			<VStack 
+				spacing={10} 
+				align="stretch">
+				<Grid 
+					templateColumns="repeat(12, 1fr)" 
+					gap={4}>
+					<GridItem 
+						colSpan={12} 
+						alignItems="center">
+						<Heading>
+							Starship Dashboard
+						</Heading>
 					</GridItem>
-					<GridItem colSpan={4}>
-						<StateSearch 
-							input={input} 
-							onInputChange={handleInputChange} 
-							isLoadingState={isLoading}
-							onHandleOnSubmit={handleOnLocationSearchClick} />
+					<GridItem colSpan={6}>
+						<StateSearch onHandleOnSubmit={handleOnLocationSearchClick} />
 					</GridItem>
-					<GridItem colSpan={2}>
-
+					<GridItem colSpan={6}>
+						<WeatherSearch onHandleOnSubmit={handleOnWeatherSearchClick} />
 					</GridItem>
 				</Grid>
 				<HStack spacing={10}>
-					<Box p={4} borderWidth='1px' borderRadius='lg'>
-
+					<Box 
+						p={4} 
+						borderWidth="1px" 
+						borderRadius="lg">
+						<DataTable 
+							columns={columns} 
+							data={data} 
+							tableVariant="striped" 
+							paginationVariant="advanced" />
 					</Box>
-					<Box p={4} borderWidth='1px' borderRadius='lg'>
+					<Box p={4} borderWidth="1px" borderRadius="lg">
+						{JSON.stringify(weather)}
 					</Box>
 				</HStack>
-
-				<Box p={4} borderWidth='1px' borderRadius='lg'>
-					<DataTable columns={columns} data={data} tableVariant='striped' paginationVariant='advanced' />
-				</Box>
 			</VStack>
 		</Container>
 	)

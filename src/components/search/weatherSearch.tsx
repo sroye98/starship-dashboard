@@ -10,11 +10,11 @@ import {
 } from '@chakra-ui/react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
-export type StateSearchProps = {
+export type WeatherSearchProps = {
     onHandleOnSubmit: SubmitHandler<FieldValues>,
 }
 
-export default function StateSearch({ onHandleOnSubmit }: StateSearchProps) {
+export default function WeatherSearch({ onHandleOnSubmit }: WeatherSearchProps) {
     const { 
         handleSubmit, 
         register, 
@@ -26,6 +26,25 @@ export default function StateSearch({ onHandleOnSubmit }: StateSearchProps) {
 
     return (
         <form onSubmit={handleSubmit(onHandleOnSubmit)}>
+            <FormControl>
+                <FormLabel htmlFor="City">Your City</FormLabel>
+                <Input 
+                    type="text" 
+                    placeholder="Enter your city" 
+                    autoComplete="off"
+                    {...register('city', {
+                        required: 'City is a required field',
+                    })} />
+                {!errors.city ? (
+                    <FormHelperText>
+                        Weather Results will be displayed based on City, State
+                    </FormHelperText>
+                ) : (
+                    <FormErrorMessage>
+                        Something went wrong
+                    </FormErrorMessage>
+                )}
+            </FormControl>
             <FormControl>
                 <FormLabel htmlFor="state">Your State</FormLabel>
                 <Input 

@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import StateSearch from "./stateSearch";
+import WeatherSearch from "./weatherSearch";
 
 const meta = {
-    title: 'Components/StateSearch',
-    component: StateSearch,
+    title: 'Components/WeatherSearch',
+    component: WeatherSearch,
     parameters: {
         layout: 'centered',
     },
     tags: ['components'],
-} satisfies Meta<typeof StateSearch>;
+} satisfies Meta<typeof WeatherSearch>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
