@@ -1,8 +1,6 @@
 'use client'
 
 import { Providers } from './providers'
-import { Provider } from 'react-redux'
-import { store } from '@/stores/store'
 
 export default function RootLayout({
 	children,
@@ -11,12 +9,13 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
+			<head>
+				<title>Startship Dashboard</title>
+			</head>
 			<body>
-				<Provider store={store}>
-					<Providers>
-						{children}
-					</Providers>
-				</Provider>
+				<Providers>
+					{children}
+				</Providers>
 			</body>
 		</html>
 	)

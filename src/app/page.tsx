@@ -8,7 +8,8 @@ import {
 	GridItem, 
 	HStack, 
 	Heading, 
-	VStack 
+	VStack,
+	Text,
 } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import StateSearch from "@/components/search/stateSearch";
@@ -16,18 +17,28 @@ import DataTable from "@/components/table/dataTable";
 import { 
     ApiResponse, 
     CityData,
+	LocationFormValues,
+	WeatherFormValues,
 	WeatherResponse, 
 } from "@/types";
 import useLocationSearch from "@/libs/useLocationSearch";
 import useWeatherSearch from "@/libs/useWeatherSearch";
 import { FieldValues } from "react-hook-form";
 import WeatherSearch from "@/components/search/weatherSearch";
+import Weather from "@/components/weather/weather";
 
 // import Image from "next/image"
 
 
 export default function Home() {
+	const [locationValues, setLocationValues] = useState<LocationFormValues>({
+		state: 'TX'
+	});
 	const [data, setData] = useState<CityData[]>([]);
+	const [weatherValues, setWeatherValues] = useState<WeatherFormValues>({
+		city: 'Houston',
+		state: 'TX'
+	});
 	const [weather, setWeather] = useState<WeatherResponse>();
 
 	const {
@@ -75,33 +86,29 @@ export default function Home() {
 					gap={4}>
 					<GridItem 
 						colSpan={12} 
-						alignItems="center">
+						textAlign="center">
 						<Heading>
 							Starship Dashboard
 						</Heading>
 					</GridItem>
 					<GridItem colSpan={6}>
-						<StateSearch onHandleOnSubmit={handleOnLocationSearchClick} />
-					</GridItem>
-					<GridItem colSpan={6}>
-						<WeatherSearch onHandleOnSubmit={handleOnWeatherSearchClick} />
-					</GridItem>
-				</Grid>
-				<HStack spacing={10}>
-					<Box 
-						p={4} 
-						borderWidth="1px" 
-						borderRadius="lg">
+						<StateSearch 
+							defaultValues={locationValues}
+							onHandleOnSubmit={handleOnLocationSearchClick} />
 						<DataTable 
 							columns={columns} 
 							data={data} 
 							tableVariant="striped" 
 							paginationVariant="advanced" />
-					</Box>
-					<Box p={4} borderWidth="1px" borderRadius="lg">
-						{JSON.stringify(weather)}
-					</Box>
-				</HStack>
+					</GridItem>
+					<GridItem colSpan={6}>
+						<WeatherSearch 
+							defaultValues={weatherValues}
+							onHandleOnSubmit={handleOnWeatherSearchClick} 
+							orientation="horizontal" />
+						<Weather data={weather} />
+					</GridItem>
+				</Grid>
 			</VStack>
 		</Container>
 	)
