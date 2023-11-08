@@ -1,95 +1,108 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+
+import { useState } from "react";
+import { 
+	Box, 
+	Container, 
+	Grid, 
+	GridItem, 
+	HStack, 
+	Heading, 
+	VStack 
+} from "@chakra-ui/react";
+import { createColumnHelper } from "@tanstack/react-table";
+import StateSearch from "@/components/search/stateSearch";
+import DataTable from "@/components/table/dataTable";
+import { 
+    ApiResponse, 
+    CityData,
+	WeatherResponse, 
+} from "@/types";
+import useLocationSearch from "@/libs/useLocationSearch";
+import useWeatherSearch from "@/libs/useWeatherSearch";
+import { FieldValues } from "react-hook-form";
+import WeatherSearch from "@/components/search/weatherSearch";
+
+// import Image from "next/image"
+
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Starship Dashboard 
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/starship-dashboard/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+	const [data, setData] = useState<CityData[]>([]);
+	const [weather, setWeather] = useState<WeatherResponse>();
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/starship-dashboard/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+	const {
+		handleCitySearchAsync,
+	} = useLocationSearch();
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+	const { 
+		handleWeatherSearchAsync,
+	} = useWeatherSearch();
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+	const handleOnLocationSearchClick = async (values: FieldValues) => {
+		const results: ApiResponse<CityData[]> = await handleCitySearchAsync(values.state);
+		setData(results.data!);
+	}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+	const handleOnWeatherSearchClick = async (values: FieldValues) => {
+		const results: ApiResponse<WeatherResponse> = await handleWeatherSearchAsync(values.city, values.state);
+		setWeather(results.data!);
+	}
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+	const columnHelper = createColumnHelper<CityData>();
+
+	const columns = [
+		columnHelper.accessor("id", {
+			cell: (info) => info.getValue(),
+			header: ""
+		}),
+		columnHelper.accessor("name", {
+			cell: (info) => info.getValue(),
+			header: "Name"
+		}),
+		columnHelper.accessor("state", {
+			cell: (info) => info.getValue(),
+			header: "State",
+		})
+	];
+	
+	return (
+		<Container maxW="full">
+			<VStack 
+				spacing={10} 
+				align="stretch">
+				<Grid 
+					templateColumns="repeat(12, 1fr)" 
+					gap={4}>
+					<GridItem 
+						colSpan={12} 
+						alignItems="center">
+						<Heading>
+							Starship Dashboard
+						</Heading>
+					</GridItem>
+					<GridItem colSpan={6}>
+						<StateSearch onHandleOnSubmit={handleOnLocationSearchClick} />
+					</GridItem>
+					<GridItem colSpan={6}>
+						<WeatherSearch onHandleOnSubmit={handleOnWeatherSearchClick} />
+					</GridItem>
+				</Grid>
+				<HStack spacing={10}>
+					<Box 
+						p={4} 
+						borderWidth="1px" 
+						borderRadius="lg">
+						<DataTable 
+							columns={columns} 
+							data={data} 
+							tableVariant="striped" 
+							paginationVariant="advanced" />
+					</Box>
+					<Box p={4} borderWidth="1px" borderRadius="lg">
+						{JSON.stringify(weather)}
+					</Box>
+				</HStack>
+			</VStack>
+		</Container>
+	)
 }
