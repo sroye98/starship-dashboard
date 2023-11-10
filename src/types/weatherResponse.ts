@@ -16,7 +16,7 @@ type MainObj = {
     temp_min: number,
     temp_max: number,
     pressure: number,
-    humitity: number,
+    humidity: number,
 }
 
 type WindObj = {

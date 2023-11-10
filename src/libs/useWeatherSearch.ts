@@ -20,7 +20,7 @@ const useWeatherSearch = () => {
 
             const normalizedCity = city.toUpperCase();
             const normalizedState = state.toUpperCase();
-            const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${normalizedCity},${normalizedState},US&appid=${Secrets.weatherApiKey!}`;
+            const url: string = `https://api.openweathermap.org/data/2.5/weather?q=${normalizedCity},${normalizedState},US&units=imperial&appid=${Secrets.weatherApiKey!}`;
             const requestOptions: RequestInit = {
                 method: 'GET',
                 redirect: 'follow'
