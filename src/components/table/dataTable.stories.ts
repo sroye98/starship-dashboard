@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import DataTable from "./dataTable";
-import { ICitiesData } from '@/interfaces/citiesData';
 import { createColumnHelper } from '@tanstack/react-table';
+import { CityData } from '@/types';
 
 const meta = {
     title: 'Components/DataTable',
@@ -16,7 +16,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-var data: ICitiesData[] = [
+var data: CityData[] = [
     {
         id: "1",
         name: "Austin",

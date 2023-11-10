@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { 
-	Box, 
 	Container, 
-	Grid, 
 	GridItem, 
-	HStack, 
 	Heading, 
 	VStack,
-	Text,
+	SimpleGrid,
+	Center,
 } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import StateSearch from "@/components/search/stateSearch";
@@ -81,16 +79,15 @@ export default function Home() {
 			<VStack 
 				spacing={10} 
 				align="stretch">
-				<Grid 
-					templateColumns="repeat(12, 1fr)" 
+				<Center maxW='full'>
+					<Heading>
+						Starship Dashboard
+					</Heading>
+				</Center>
+				<SimpleGrid 
+					minChildWidth='120px' 
+					spacing='40px'
 					gap={4}>
-					<GridItem 
-						colSpan={12} 
-						textAlign="center">
-						<Heading>
-							Starship Dashboard
-						</Heading>
-					</GridItem>
 					<GridItem colSpan={6}>
 						<StateSearch 
 							defaultValues={locationValues}
@@ -108,7 +105,7 @@ export default function Home() {
 							orientation="horizontal" />
 						<Weather data={weather} />
 					</GridItem>
-				</Grid>
+				</SimpleGrid>
 			</VStack>
 		</Container>
 	)

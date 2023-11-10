@@ -22,6 +22,7 @@ type MainObj = {
 type WindObj = {
     speed: number,
     deg: number,
+    gust: number,
 }
 
 type CloudsObj = {

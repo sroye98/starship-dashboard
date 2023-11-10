@@ -21,8 +21,6 @@ import {
 } from '@chakra-ui/react';
 import { WeatherResponse } from "@/types";
 import { 
-    WiDegrees,
-    WiFahrenheit, 
     WiHumidity, 
     WiSunrise, 
     WiSunset, 
@@ -42,19 +40,17 @@ export default function Weather({ data }: WeatherProps) {
                 <Card>
                     <CardBody>
                         <Box maxW='full'>
-                            <Center>
-                                <Stat>
-                                    <StatLabel>
-                                        {data.name}
-                                    </StatLabel>
-                                    <StatNumber>
-                                        {data.main.temp}<Icon as={WiDegrees} />
-                                    </StatNumber>
-                                    <StatHelpText>
-                                        H:{data.main.temp_max}<Icon as={WiDegrees} /> L:{data.main.temp_min}<Icon as={WiDegrees} />
-                                    </StatHelpText>
-                                </Stat>
-                            </Center>
+                            <Stat textAlign="center">
+                                <StatLabel>
+                                    {data.name}
+                                </StatLabel>
+                                <StatNumber>
+                                    {data.main.temp}&nbsp;&deg;
+                                </StatNumber>
+                                <StatHelpText>
+                                    H:{data.main.temp_max}&nbsp;&deg; L:{data.main.temp_min}&nbsp;&deg;
+                                </StatHelpText>
+                            </Stat>
                         </Box>
                         <Box maxW='full'>
                             <Center>
@@ -63,9 +59,9 @@ export default function Weather({ data }: WeatherProps) {
                                     alt={data.weather[0].description} />
                             </Center>
                             <Center>
-                                <Text>
-                                    Description: {data.weather[0].description}
-                                </Text>
+                                <Heading as="h2" size="md">
+                                    {data.weather[0].main}
+                                </Heading>
                             </Center>
                         </Box>
                         <Box>
@@ -76,14 +72,14 @@ export default function Weather({ data }: WeatherProps) {
                                             <ListIcon 
                                                 as={WiThermometer} 
                                                 color="green.500" />
-                                            {data.main.temp} <Icon as={WiFahrenheit} />
+                                            {data.main.temp}&nbsp;&deg;F
                                         </Box>
                                         <Spacer />
                                         <Box>
                                             <ListIcon 
                                                 as={WiThermometer} 
                                                 color="green.500" />
-                                            {data.main.feels_like} <Icon as={WiFahrenheit} />
+                                            {data.main.feels_like}&nbsp;&deg;F
                                         </Box>
                                     </Flex>
                                 </ListItem>

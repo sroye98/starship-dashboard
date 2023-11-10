@@ -18,6 +18,7 @@ export const Basic: Story = {
     args: {
         defaultValues: { city: 'Houston', state: 'TX' },
         onHandleOnSubmit: (e) => {},
+        orientation: 'horizontal',
     }
 };
 
@@ -25,6 +26,7 @@ export const Error: Story = {
     args: {
         defaultValues: { city: 'Houston', state: 'TX' },
         onHandleOnSubmit: (e) => {},
+        orientation: 'horizontal',
     }
 };
 
@@ -32,5 +34,6 @@ export const Loading: Story = {
     args: {
         defaultValues: { city: 'Houston', state: 'TX' },
         onHandleOnSubmit: (e) => {},
+        orientation: 'horizontal',
     }
 };
