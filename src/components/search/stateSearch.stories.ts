@@ -16,18 +16,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
     args: {
+        defaultValues: { state: 'TX' },
         onHandleOnSubmit: (e) => {},
     }
 };
 
 export const Error: Story = {
     args: {
+        defaultValues: { state: '' },
         onHandleOnSubmit: (e) => {},
     }
 };
 
 export const Loading: Story = {
     args: {
+        defaultValues: { state: 'TX' },
         onHandleOnSubmit: (e) => {},
     }
 };
